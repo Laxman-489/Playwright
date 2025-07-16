@@ -1,8 +1,8 @@
 package base;
 
 import com.microsoft.playwright.*;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 public class BaseTest {
     protected Playwright playwright;
@@ -10,18 +10,36 @@ public class BaseTest {
     protected BrowserContext browserContext;
     protected Page page;
 
-    @BeforeTest
-    public void setUp(){
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
-        browserContext = browser.newContext();
-        page = browserContext.newPage();
-
+    @BeforeMethod
+    public void setUp() {
+        try {
+            playwright = Playwright.create();
+            browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+            browserContext = browser.newContext();
+            page = browserContext.newPage();
+        } catch (Exception e) {
+            System.err.println("Error setting up Playwright: " + e.getMessage());
+            throw e;
+        }
     }
-    @AfterTest
-    public void tearDown(){
-       if (playwright != null){
-           playwright.close();
-       }
+
+    @AfterMethod
+    public void tearDown() {
+        try {
+            if (page != null) {
+                page.close();
+            }
+            if (browserContext != null) {
+                browserContext.close();
+            }
+            if (browser != null) {
+                browser.close();
+            }
+            if (playwright != null) {
+                playwright.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Error during teardown: " + e.getMessage());
+        }
     }
 }
