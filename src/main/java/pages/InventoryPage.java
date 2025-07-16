@@ -12,13 +12,13 @@ public class InventoryPage extends BasePage {
     private final String addToCartButtonSelector = "#shopping_cart_container";
     private final String slideBarMenu = "#react-burger-menu-btn";
     private final String logOutLinkSelector = "#logout_sidebar_link";
-   // private final String selectItem="//*[@name='xxx']";
+   private final String selectItem="//*[@name='xxx']";
 
     public InventoryPage(Page page) {
         super(page);
     }
     public Locator cartItems() {
-        return page.locator(".cart_item");
+        return page.locator(selectItem);
     }
     public List<String> getCartItemNames() {
         List<String> itemNames = new ArrayList<>();
