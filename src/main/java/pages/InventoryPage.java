@@ -12,14 +12,16 @@ public class InventoryPage extends BasePage {
     private final String addToCartButtonSelector = "#shopping_cart_container";
     private final String slideBarMenu = "#react-burger-menu-btn";
     private final String logOutLinkSelector = "#logout_sidebar_link";
-   private final String selectItem="//*[@name='xxx']";
+    private final String selectItem = "//*[@name='xxx']";
 
     public InventoryPage(Page page) {
         super(page);
     }
+
     public Locator cartItems() {
         return page.locator(selectItem);
     }
+
     public List<String> getCartItemNames() {
         List<String> itemNames = new ArrayList<>();
         int count = cartItems().count();
@@ -31,15 +33,17 @@ public class InventoryPage extends BasePage {
 
         return itemNames;
     }
-//    public void addItemToCart(String itemName) {
+
+    //    public void addItemToCart(String itemName) {
 //
 //        String itemToClick = selectItem.replace("xxx", itemName);
 //        page.click(itemToClick);
 //    }
-    public void goToCart(){
+    public void goToCart() {
         page.click(addToCartButtonSelector);
     }
-    public void logOut(){
+
+    public void logOut() {
         page.click(slideBarMenu);
         page.click(logOutLinkSelector);
     }

@@ -11,9 +11,11 @@ public class CartPage {
 
 
     public CartPage(Page page) {
+
         this.page = page;
     }
     private Locator cartItems() {
+
         return page.locator(".cart_item");
     }
     public List<String> getCartItemNames() {
