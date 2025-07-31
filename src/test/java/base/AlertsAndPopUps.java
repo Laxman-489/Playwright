@@ -18,6 +18,27 @@ public class AlertsAndPopUps {
         private static Browser browser;
         private Page page;
 
+        public void handleJsDialog(Page page, String action, String inputMessage) {
+            page.onceDialog(dialog -> {
+                System.out.println("Dialog Text: " + dialog.message());
+
+                if (action == null) {
+                    return;
+                }
+
+                if (action.equals("accept")) {
+                    if (inputMessage != null) {
+                        dialog.accept(inputMessage); // For prompt dialogs
+                    } else {
+                        dialog.accept();
+                    }
+                } else if (action.equals("dismiss")) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+
         @BeforeClass
         public void Setup() {
             playwright = Playwright.create();
@@ -31,12 +52,8 @@ public class AlertsAndPopUps {
         }
 
         @Test
-        public void testJsAlert() {
-            page.onDialog(dialog -> {
-                System.out.println("JS Alert Text: " + dialog.message());
-                dialog.accept();
-            });
-
+        public void testJsAlert( ) {
+            handleJsDialog(page , "accept", null);
             page.locator("text=Click for JS Alert").click();
 
             String result = page.locator("#result").textContent();
@@ -46,13 +63,8 @@ public class AlertsAndPopUps {
 
         @Test
         public void testJsConfirmAccept() {
-            page.onDialog(dialog -> {
-                System.out.println("JS Confirm Text: " + dialog.message());
-                dialog.accept();
-            });
-
+            handleJsDialog(page , "accept", null);
             page.locator("text=Click for JS Confirm").click();
-
             String result = page.locator("#result").textContent();
             System.out.println("Result after Confirm Accept: " + result);
             assert result.contains("You clicked: Ok");
@@ -60,24 +72,15 @@ public class AlertsAndPopUps {
 
         @Test
         public void testJsConfirmDismiss() {
-            page.onceDialog(dialog -> {
-                System.out.println("JS Confirm Text: " + dialog.message());
-                dialog.dismiss();
-            });
-
+            handleJsDialog(page , "dismiss", null);
             page.locator("text=Click for JS Confirm").click();
-
             String result = page.locator("#result").textContent();
             assert result.contains("You clicked: Cancel");
         }
 
         @Test
         public void testJsPromptAcceptWithInput() {
-            page.onDialog(dialog -> {
-                System.out.println("JS Prompt Text: " + dialog.message());
-                dialog.accept("Playwright Test");
-            });
-
+            handleJsDialog(page, "accept", "Playwright Test");
             page.locator("text=Click for JS Prompt").click();
             String result = page.locator("#result").textContent();
 
